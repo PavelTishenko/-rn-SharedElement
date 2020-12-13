@@ -1,13 +1,40 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
+import 'react-native-gesture-handler';
 import { StyleSheet, Text, View } from 'react-native';
+// SharedEl preparation and navigation
+import {NavigationContainer} from '@react-navigation/native';
+import {createSharedElementStackNavigator} from 'react-navigation-shared-element';
+import List from './screens/ListScreen';
+import Detail from './screens/Detail';
 
-export default function App() {
+const Stack = createSharedElementStackNavigator();
+
+const App = () =>  {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+   <NavigationContainer>
+     <Stack.Navigator initialRouteName='List'>
+       <Stack.Screen name='List' component={List}/>
+       <Stack.Screen 
+          name='Detail'
+          component={Detail}
+          options={() => ({
+            gestureEnabled: false,
+            transitionSpec: {
+              open: {animation: 'timing', config: {duration: 1000}},
+              close: {animation: 'timing', config: {duration: 1000}},
+            },
+            cardStyleInterpolator: ({current: {progress}}) => {
+              return {
+                cardStyle: {
+                  opacity: progress,
+                }
+              }
+            }
+          })}
+          />
+     </Stack.Navigator>
+   </NavigationContainer>
   );
 }
 
@@ -19,3 +46,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default App;
